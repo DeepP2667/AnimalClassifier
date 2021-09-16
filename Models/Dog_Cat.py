@@ -16,7 +16,7 @@ from sklearn.svm import SVC
 from skimage.io import imread
 #HOG, histogram of oriented gradients
 
-classes = ["Cat", "Dog"]
+labels = ["Cat", "Dog"]
 
 
 def get_data():
@@ -51,11 +51,37 @@ def get_data():
 cat_path = r'C:\Users\deepp\Desktop\PetImages\Cat'
 dog_path = r'C:\Users\deepp\Desktop\PetImages\Dog'
 
-for i in range(2):
-    print(os.path.join(cat_path, f"{i}.png"))
-    img = imread(os.path.join(cat_path, f"{i}.jpg"))
-    
+width = []
+height = []
+
+
+for filename in os.listdir(cat_path):
+
+    try:
+        img = imread(os.path.join(cat_path, filename))
+        width.append(img.shape[0])
+        height.append(img.shape[1])
+
+    except AttributeError:
+        print("Image not applicable. (No image)")
+        print("Will not be included")
+
+    except ValueError:
+        print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
+        print("Will not be included")
+
     plt.imshow(img)
     plt.show()
 
-#NEXT: Figure out method to unravel image and match size for each image
+mean_width = np.mean(np.array(width)))   #356 (mean width ran on colab)
+mean_height = np.mean(np.array(height))  #410 (mean height ran on colab)
+
+
+for filename in os.listdir(cat_path):
+    test_img = imread(os.path.join(cat_path, filename))
+    resized_img = resize(test_img, (mean_width, mean_height, 3), anti_aliasing=True)
+
+    #NEXT: Unravel and create dataframe
+    #REMEMBER: Make file to add store dimensions so I don't need to rerun finding mean width/height 
+
+
