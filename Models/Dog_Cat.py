@@ -1,8 +1,11 @@
 import os
+import pickle as pk
+import random
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+import cv2
 
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
@@ -10,13 +13,16 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import validation_curve
 
 from sklearn.metrics import confusion_matrix
-
 from sklearn.svm import SVC
 
 from skimage.io import imread
+from skimage.transform import resize
+from skimage.color import rgb2gray
 #HOG, histogram of oriented gradients
 
-labels = ["Cat", "Dog"]
+local_path = os.path.dirname(__file__)
+
+labels = ["Cat", "Dog"]     # Cats:0 , Dogs:1
 
 
 def get_data():
@@ -44,44 +50,131 @@ def get_data():
 
     return cat_path, dog_path
 
+#cat_path, dog_path = get_data()
+
+# cat_path = 'C:/Users/deepp/Desktop/PetImages/Cat'
+# dog_path = 'C:/Users/deepp/Desktop/PetImages/Dog'
+
+# data = []
+
+# #for filename in os.listdir(cat_path):
+# for i in range(3000):
+#     try:
+#         img = cv2.imread(os.path.join(cat_path, f"{i}.jpg"), 0)
+#     except AttributeError:
+#         print("Image not applicable. (No image)")
+#         print("Will not be included")
+#         continue
+
+#     except ValueError:
+#         print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
+#         print("Will not be included")
+#         continue
+
+#     except Exception as e:
+#         print(e)
+#         print("Image not applicable")
+#         continue
+
+#     if img is None:
+#         print('None')
+#     else:
+#         resized_img = cv2.resize(img, (50, 50))
+#         flattened_img = resized_img.flatten()/255 
+#         flattened_img = np.append(flattened_img, 0)
+
+#         data.append(flattened_img)
+        
+#         # plt.imshow(resized_img, cmap='gray')
+#         # plt.show()
+
+# print("dogs")
+
+# #for filename in os.listdir(dog_path):
+# for i in range(3000):
+#     try:
+#         img = cv2.imread(os.path.join(dog_path, f"{i}.jpg"), 0)
+
+#     except AttributeError:
+#         print("Image not applicable. (No image)")
+#         print("Will not be included")
+#         continue
+
+#     except ValueError:
+#         print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
+#         print("Will not be included")
+#         continue
+
+#     except Exception as e:
+#         print(e)
+#         print("Image not applicable")
+#         continue
+    
+#     if img is None:
+#         print('None')
+#     else:
+#         resized_img = cv2.resize(img, (50, 50))
+#         flattened_img = resized_img.flatten()/255
+#         flattened_img = np.append(flattened_img, 1)
+
+#         data.append(flattened_img)
 
 
-# cat_path, dog_path = get_data()
+# data = np.array(data, dtype='uint8')
 
-cat_path = r'C:\Users\deepp\Desktop\PetImages\Cat'
-dog_path = r'C:\Users\deepp\Desktop\PetImages\Dog'
+data_path = os.path.join(local_path, 'DataMatrix.npy')
 
-width = []
-height = []
+# np.save(data_path, data) 
+data = np.load(data_path)
+random.shuffle(data)
+cols = len(data[0])-1
+
+X = data[:,:cols]
+y = data[:,cols:].ravel()
+
+test_score = 0
+
+print(X.shape, y.shape)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+parameters = {'C': [1, 10, 100, 1000],
+              'gamma': [10, 1, 1e-1, 1e-2, 1e-3, 1e-4],
+              'kernel':['poly', 'rbf']}   
+
+clf = SVC(C=100, kernel='rbf', gamma='auto')
+clf.fit(X_train, y_train)
+
+train_score = clf.score(X_train, y_train)
+test_score = clf.score(X_test, y_test)
+
+print(type(test_score))
+
+best_stats_path = os.path.join(local_path, 'BestStats', 'best_score.txt')
+
+def save_best_model():
+
+    model_path = os.path.join(local_path, 'BestStats', 'best_model.pkl')
+
+    with open(model_path, 'wb') as best_model:
+        pk.dump(clf, best_model)
 
 
-for filename in os.listdir(cat_path):
+with open(best_stats_path, 'w+') as scores:
+
+    best_score = scores.readline()
+
+    data_path = os.path.join(local_path, 'BestStats/best_data.npy')
 
     try:
-        img = imread(os.path.join(cat_path, filename))
-        width.append(img.shape[0])
-        height.append(img.shape[1])
-
-    except AttributeError:
-        print("Image not applicable. (No image)")
-        print("Will not be included")
+        if test_score > float(best_score):
+            save_best_model()
+            np.save(data_path, data)
+            scores.write(f"{test_score}")
 
     except ValueError:
-        print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
-        print("Will not be included")
-
-    plt.imshow(img)
-    plt.show()
-
-mean_width = np.mean(np.array(width)))   #356 (mean width ran on colab)
-mean_height = np.mean(np.array(height))  #410 (mean height ran on colab)
-
-
-for filename in os.listdir(cat_path):
-    test_img = imread(os.path.join(cat_path, filename))
-    resized_img = resize(test_img, (mean_width, mean_height, 3), anti_aliasing=True)
-
-    #NEXT: Unravel and create dataframe
-    #REMEMBER: Make file to add store dimensions so I don't need to rerun finding mean width/height 
-
+        print("There was no value: Adding test score found")
+        save_best_model()
+        np.save(data_path, data)
+        scores.write(f"{test_score}")
 
