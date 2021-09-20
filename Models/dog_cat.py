@@ -158,6 +158,5 @@ with open(model_path, 'rb') as model:
 
 
 
-#HOST MODEL (SAVED MODEL TOO LARGE)
 #ADD GUI
 
