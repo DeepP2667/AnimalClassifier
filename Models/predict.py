@@ -26,9 +26,14 @@ def predict_img(img_path):
 
     prediction = int(loaded_model.predict(img_data))
 
+    proba = loaded_model.decision_function(img_data)
+
     print(classes[prediction])
     
     plt.imshow(img, cmap="gray")
     plt.title(f"A {classes[prediction]}")
     plt.show()
 
+
+img_path = r'C:\Users\deepp\Desktop\Dog.jfif'
+predict_img(img_path)

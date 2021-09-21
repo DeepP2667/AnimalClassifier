@@ -1,4 +1,5 @@
 from save_stats import main_save
+from predict import predict_img
 
 import os
 import pickle as pk
@@ -11,15 +12,10 @@ import cv2
 
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import validation_curve
 
 from sklearn.metrics import confusion_matrix
 from sklearn.svm import SVC
 
-from skimage.io import imread
-from skimage.transform import resize
-from skimage.color import rgb2gray
 #HOG, histogram of oriented gradients
 
 
@@ -53,78 +49,78 @@ def get_data():
 
     return cat_path, dog_path
 
-#cat_path, dog_path = get_data()
+# cat_path, dog_path = get_data()
 
-cat_path = 'C:/Users/deepp/Desktop/PetImages/Cat'
-dog_path = 'C:/Users/deepp/Desktop/PetImages/Dog'
+# cat_path = 'C:/Users/deepp/Desktop/PetImages/Cat'
+# dog_path = 'C:/Users/deepp/Desktop/PetImages/Dog'
 
-data = []
+# data = []
 
-for filename in os.listdir(cat_path):
-    try:
-        img = cv2.imread(os.path.join(cat_path, filename), 0)
-    except AttributeError:
-        print("Image not applicable. (No image)")
-        print("Will not be included")
-        continue
+# for filename in os.listdir(cat_path):
+#     try:
+#         img = cv2.imread(os.path.join(cat_path, filename), 0)
+#     except AttributeError:
+#         print("Image not applicable. (No image)")
+#         print("Will not be included")
+#         continue
 
-    except ValueError:
-        print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
-        print("Will not be included")
-        continue
+#     except ValueError:
+#         print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
+#         print("Will not be included")
+#         continue
 
-    except Exception as e:
-        print(e)
-        print("Image not applicable")
-        continue
+#     except Exception as e:
+#         print(e)
+#         print("Image not applicable")
+#         continue
 
-    if img is None:
-        print('None')
-    else:
-        resized_img = cv2.resize(img, (50, 50))
-        flattened_img = resized_img.flatten()/255 
-        flattened_img = np.append(flattened_img, 0)
+#     if img is None:
+#         print('None')
+#     else:
+#         resized_img = cv2.resize(img, (50, 50))
+#         flattened_img = resized_img.flatten()/255 
+#         flattened_img = np.append(flattened_img, 0)
 
-        data.append(flattened_img)
+#         data.append(flattened_img)
         
-        # plt.imshow(resized_img, cmap='gray')
-        # plt.show()
+#         # plt.imshow(resized_img, cmap='gray')
+#         # plt.show()
 
-print("dogs")
+# print("dogs")
 
-for filename in os.listdir(dog_path):
-    try:
-        img = cv2.imread(os.path.join(dog_path, filename), 0)
+# for filename in os.listdir(dog_path):
+#     try:
+#         img = cv2.imread(os.path.join(dog_path, filename), 0)
 
-    except AttributeError:
-        print("Image not applicable. (No image)")
-        print("Will not be included")
-        continue
+#     except AttributeError:
+#         print("Image not applicable. (No image)")
+#         print("Will not be included")
+#         continue
 
-    except ValueError:
-        print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
-        print("Will not be included")
-        continue
+#     except ValueError:
+#         print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
+#         print("Will not be included")
+#         continue
 
-    except Exception as e:
-        print(e)
-        print("Image not applicable")
-        continue
+#     except Exception as e:
+#         print(e)
+#         print("Image not applicable")
+#         continue
     
-    if img is None:
-        print('None')
-    else:
-        resized_img = cv2.resize(img, (50, 50))
-        flattened_img = resized_img.flatten()/255
-        flattened_img = np.append(flattened_img, 1)
+#     if img is None:
+#         print('None')
+#     else:
+#         resized_img = cv2.resize(img, (50, 50))
+#         flattened_img = resized_img.flatten()/255
+#         flattened_img = np.append(flattened_img, 1)
 
-        data.append(flattened_img)
+#         data.append(flattened_img)
 
 data_path = os.path.join(local_path, 'DataMatrix.npy')
 
-data = np.array(data, dtype='uint8')
+#data = np.array(data, dtype='uint8')
 
-np.save(data_path, data) 
+#np.save(data_path, data) 
 data = np.load(data_path)
 
 random.shuffle(data)
@@ -152,9 +148,6 @@ print(test_score)
 main_save(test_score, clf, data)
 
 model_path = os.path.join(local_path, 'BestStats', 'best_model.pkl')
-
-with open(model_path, 'rb') as model:
-    loaded_model = pk.load(model)
 
 
 

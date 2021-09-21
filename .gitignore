@@ -1,5 +1,9 @@
 ACvenv
 test.py
 __pycache__
-BestStats
 
+#Matrix of pixel values of images (LAST TRAINED MODEL)
+DataMatrix.npy
+
+#Files included in BestStats but too large for github (best_data.npy, best_score.txt, best_model.pkl)
+BestStats

@@ -2,4 +2,4 @@ numpy
 pandas
 matplotlib
 scikit-learn
-scikit-image
+cv2
