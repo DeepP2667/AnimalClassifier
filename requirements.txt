@@ -2,4 +2,5 @@ numpy
 pandas
 matplotlib
 scikit-learn
-cv2
+opencv-python
+PyQt5
