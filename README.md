@@ -7,7 +7,7 @@ Personal Project:
 
 Future plans:
 
-      •	Add GUI interface for users
+      •	Add GUI interface for users     (Working on)
 
       •	Increase accuracy with HOG algorithm
 
