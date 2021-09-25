@@ -11,15 +11,16 @@ import matplotlib.pyplot as plt
 import cv2
 
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
-
-from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.svm import SVC
+
+from skimage.feature import hog
 
 #HOG, histogram of oriented gradients
 
 
 local_path = os.path.dirname(__file__)
+
 
 labels = ["Cat", "Dog"]     # Cats:0 , Dogs:1
 
@@ -51,79 +52,66 @@ def get_data():
 
 # cat_path, dog_path = get_data()
 
-# cat_path = 'C:/Users/deepp/Desktop/PetImages/Cat'
-# dog_path = 'C:/Users/deepp/Desktop/PetImages/Dog'
+cat_path = 'C:/Users/deepp/Desktop/PetImages/Cat'
+dog_path = 'C:/Users/deepp/Desktop/PetImages/Dog'
 
-# data = []
+data = []
 
 # for filename in os.listdir(cat_path):
-#     try:
-#         img = cv2.imread(os.path.join(cat_path, filename), 0)
-#     except AttributeError:
-#         print("Image not applicable. (No image)")
-#         print("Will not be included")
-#         continue
+for i in range(1000):
+    try:
+        img = cv2.imread(os.path.join(cat_path, f"{i}.jpg"), 0)
+        img = cv2.resize(img, (64, 128))
 
-#     except ValueError:
-#         print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
-#         print("Will not be included")
-#         continue
+        fd, hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),
+                    cells_per_block=(1, 1), visualize=True)
 
-#     except Exception as e:
-#         print(e)
-#         print("Image not applicable")
-#         continue
+        # cropped_img = img[50:250,150:300]
+        # resized_img = cv2.resize(cropped_img, (200, 150))
+        # plt.imshow(hog_image, cmap='gray')
+        # plt.show()
+        # flattened_img = resized_img.flatten()/255
 
-#     if img is None:
-#         print('None')
-#     else:
-#         resized_img = cv2.resize(img, (50, 50))
-#         flattened_img = resized_img.flatten()/255 
-#         flattened_img = np.append(flattened_img, 0)
+        # flattened_img = np.append(flattened_img, 0)
 
-#         data.append(flattened_img)
+        data.append(np.append(fd, 0))
+    
+    except Exception as e:
+        pass
         
-#         # plt.imshow(resized_img, cmap='gray')
-#         # plt.show()
+        
 
-# print("dogs")
+print("Dogs")
 
 # for filename in os.listdir(dog_path):
-#     try:
-#         img = cv2.imread(os.path.join(dog_path, filename), 0)
+for i in range(1000):
+    try:
+        img = cv2.imread(os.path.join(dog_path, f"{i}.jpg"), 0)
+        img = cv2.resize(img, (64, 128))
 
-#     except AttributeError:
-#         print("Image not applicable. (No image)")
-#         print("Will not be included")
-#         continue
+        fd, hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),
+                    cells_per_block=(1, 1), visualize=True)
 
-#     except ValueError:
-#         print("Not a jpg file or filename not an index.png (Eg. cat.png instead of 0.png)")
-#         print("Will not be included")
-#         continue
+        # cropped_img = img[100:300,100:250]
+        # plt.imshow(cropped_img, cmap="gray")
+        # plt.show()
+        # resized_img = cv2.resize(cropped_img, (200, 150))
 
-#     except Exception as e:
-#         print(e)
-#         print("Image not applicable")
-#         continue
+        # flattened_img = resized_img.flatten()/255
+        # flattened_img = np.append(flattened_img, 1)
+
+        data.append(np.append(fd, 1))
+
+    except Exception as e:
+        pass
     
-#     if img is None:
-#         print('None')
-#     else:
-#         resized_img = cv2.resize(img, (50, 50))
-#         flattened_img = resized_img.flatten()/255
-#         flattened_img = np.append(flattened_img, 1)
-
-#         data.append(flattened_img)
 
 data_path = os.path.join(local_path, 'DataMatrix.npy')
 
-#data = np.array(data, dtype='uint8')
+data = np.array(data)
 
-#np.save(data_path, data) 
+np.save(data_path, data) 
 data = np.load(data_path)
-
-random.shuffle(data)
 
 features = len(data[0])-1
 X = data[:,:features]
@@ -137,19 +125,25 @@ parameters = {'C': [1, 10, 100, 1000],
               'gamma': [10, 1, 1e-1, 1e-2, 1e-3, 1e-4],
               'kernel':['poly', 'rbf']}   
 
-clf = SVC(C=100, kernel='rbf', gamma='auto')
-clf.fit(X_train, y_train)
+svm = SVC()
+clf = RandomizedSearchCV(svm, parameters)
+tuned = clf.fit(X_train, y_train)
 
 train_score = clf.score(X_train, y_train)
 test_score = clf.score(X_test, y_test)
 
+print(tuned.best_params_)
+print(train_score)
 print(test_score)
 
 main_save(test_score, clf, data)
 
-model_path = os.path.join(local_path, 'BestStats', 'best_model.pkl')
+# model_path = os.path.join(local_path, 'BestStats', 'best_model.pkl')
 
+# with open(model_path, 'rb') as model:
+#     loaded_model = pk.load(model)
 
+# print(loaded_model.score(X_test, y_test))
 
-#ADD GUI
+# #ADD GUI
 
