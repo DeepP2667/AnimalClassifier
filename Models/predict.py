@@ -4,6 +4,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
+from skimage.feature import hog
+
 classes = ["Cat", "Dog"]
 local_path = os.path.dirname(__file__)
 model_path = os.path.join(local_path, 'BestStats', 'best_model.pkl')
@@ -20,20 +22,16 @@ def predict_img(img_path):
         print("Please try a different image")
     
     else:
-        resized_img = cv2.resize(img, (50, 50))
-        flattened_img = resized_img.flatten()/255 
-        img_data = np.array(flattened_img).reshape(1,-1)
+        img = cv2.resize(img, (64, 128))
+        fd, hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),
+                    cells_per_block=(1, 1), visualize=True)
+        fd = fd.reshape(1,-1)
+        prediction = int(loaded_model.predict(fd))
 
-    prediction = int(loaded_model.predict(img_data))
+        print(prediction)
 
-    proba = loaded_model.decision_function(img_data)
-
-    print(classes[prediction])
+        return classes[prediction]
     
-    plt.imshow(img, cmap="gray")
-    plt.title(f"A {classes[prediction]}")
-    plt.show()
-
-
-img_path = r'C:\Users\deepp\Desktop\Dog.jfif'
-predict_img(img_path)
+    # plt.imshow(img, cmap="gray")
+    # plt.title(f"A {classes[prediction]}")
+    # plt.show()

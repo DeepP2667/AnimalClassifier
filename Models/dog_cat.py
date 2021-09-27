@@ -16,8 +16,6 @@ from sklearn.svm import SVC
 
 from skimage.feature import hog
 
-#HOG, histogram of oriented gradients
-
 
 local_path = os.path.dirname(__file__)
 
@@ -66,19 +64,10 @@ for i in range(1000):
         fd, hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),
                     cells_per_block=(1, 1), visualize=True)
 
-        # cropped_img = img[50:250,150:300]
-        # resized_img = cv2.resize(cropped_img, (200, 150))
-        # plt.imshow(hog_image, cmap='gray')
-        # plt.show()
-        # flattened_img = resized_img.flatten()/255
-
-        # flattened_img = np.append(flattened_img, 0)
-
         data.append(np.append(fd, 0))
     
     except Exception as e:
         pass
-        
         
 
 print("Dogs")
@@ -91,14 +80,6 @@ for i in range(1000):
 
         fd, hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),
                     cells_per_block=(1, 1), visualize=True)
-
-        # cropped_img = img[100:300,100:250]
-        # plt.imshow(cropped_img, cmap="gray")
-        # plt.show()
-        # resized_img = cv2.resize(cropped_img, (200, 150))
-
-        # flattened_img = resized_img.flatten()/255
-        # flattened_img = np.append(flattened_img, 1)
 
         data.append(np.append(fd, 1))
 
@@ -137,13 +118,3 @@ print(train_score)
 print(test_score)
 
 main_save(test_score, clf, data)
-
-# model_path = os.path.join(local_path, 'BestStats', 'best_model.pkl')
-
-# with open(model_path, 'rb') as model:
-#     loaded_model = pk.load(model)
-
-# print(loaded_model.score(X_test, y_test))
-
-# #ADD GUI
-
