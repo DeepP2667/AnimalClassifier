@@ -1,9 +1,13 @@
 import os
+
 import sys
+sys.path.insert(0, os.path.dirname(__file__).replace("GUI", "Models"))
+from predict import predict_img
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog, QFileDialog, QWidget
+from PyQt5.QtGui import QPixmap
 from PredictionScreen import Ui_PredictionWindow
-
 
 
 ui_path = os.path.join(os.path.dirname(__file__), "MainScreen.ui")
@@ -12,6 +16,8 @@ desktop_path = os.path.expanduser("~/Desktop")
 
 class Ui_MainScreen(QWidget):
 
+    file_path = ""
+
     def openPredictionWindow(self):
 
         self.window2 = QtWidgets.QDialog()
@@ -19,14 +25,19 @@ class Ui_MainScreen(QWidget):
         self.ui.setupUi(self.window2)
         self.window2.show()
         MainScreen.hide()
+
+        prediction = predict_img(self.file_path)
+        self.ui.Prediction.setText("Your image is a " + prediction + "!")
+        self.ui.Image.setPixmap(QPixmap(self.file_path))
+        
      
     def browsefiles(self):
 
         filter_type = "Images (*.png *.xpm *.jpg *.jfif)"
 
         filename = QFileDialog.getOpenFileName(self, "File Explorer", desktop_path, filter=filter_type)
-        file_path = filename[0]
-        self.Filepath.setText(file_path)
+        self.file_path = filename[0]
+        self.Filepath.setText(self.file_path)
 
 
     def setupUi(self, MainScreen):

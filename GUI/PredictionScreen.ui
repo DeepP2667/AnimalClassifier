@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>970</width>
-    <height>420</height>
+    <width>1026</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="Finish">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>330</y>
+     <x>140</x>
+     <y>370</y>
      <width>111</width>
      <height>51</height>
     </rect>
@@ -31,11 +31,11 @@
     <string>Finish</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="Prediction">
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>10</y>
+     <y>70</y>
      <width>431</width>
      <height>81</height>
     </rect>
@@ -47,6 +47,27 @@
    </property>
    <property name="text">
     <string>Your image is a </string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="Image">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>80</y>
+     <width>581</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../../../../../Cat.jpg</pixmap>
    </property>
   </widget>
  </widget>
