@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_PredictionWindow(object):
     def setupUi(self, PredictionWindow):
         PredictionWindow.setObjectName("PredictionWindow")
-        PredictionWindow.resize(1026, 541)
+        PredictionWindow.resize(1250, 541)
         self.Finish = QtWidgets.QPushButton(PredictionWindow, clicked=lambda: sys.exit())
         self.Finish.setGeometry(QtCore.QRect(190, 370, 111, 51))
         font = QtGui.QFont()

@@ -27,8 +27,16 @@ class Ui_MainScreen(QWidget):
         MainScreen.hide()
 
         prediction = predict_img(self.file_path)
-        self.ui.Prediction.setText("Your image is a " + prediction + "!")
-        self.ui.Image.setPixmap(QPixmap(self.file_path))
+
+        if prediction == None:
+            self.ui.Prediction.setText("No image found...")
+        else:
+            self.ui.Prediction.setText("Your image is a " + prediction + "!")
+
+        self.pixmap = QPixmap(self.file_path)
+        self.pixmap = self.pixmap.scaled(550, 450)
+        self.ui.Image.setPixmap(self.pixmap)
+
         
      
     def browsefiles(self):

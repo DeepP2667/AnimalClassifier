@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1026</width>
+    <width>1250</width>
     <height>541</height>
    </rect>
   </property>
@@ -52,7 +52,7 @@
   <widget class="QLabel" name="Image">
    <property name="geometry">
     <rect>
-     <x>660</x>
+     <x>690</x>
      <y>80</y>
      <width>581</width>
      <height>391</height>
