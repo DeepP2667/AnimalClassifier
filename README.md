@@ -7,13 +7,13 @@ Personal Project:
 
 Future plans:
 
-      •	Add GUI interface for users     (Working on)
+      •	Add GUI interface for users    
 
       •	Increase accuracy with HOG algorithm
 
       •	Add different genuses such as tiger vs lion
 
-      •	Create app instead of GUI
+      •	Create app   (Working on)
 
       •	Use CNN to classifiy specific species
 
